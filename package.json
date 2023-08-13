@@ -20,7 +20,10 @@
     "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.1",
-    "mongoose": "^7.4.2"
+    "mongoose": "^7.4.2",
+    "os": "^0.1.2",
+    "os-browserify": "^0.3.0",
+    "util": "^0.12.5"
   },
   "devDependencies": {
     "concurrently": "^8.2.0",
