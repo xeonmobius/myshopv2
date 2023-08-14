@@ -3,28 +3,22 @@ export const addDecimals = (num) => {
 };
 
 export const updateCart = (state) => {
-  // Calculate Item Price
+
   state.itemsPrice = addDecimals(
-    state.cartItems.reduce(
-      (accumulator, item) => accumulator + item.quantity * item.price,
-      0
-    )
+    state.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
   );
 
-  // Calculate Shipping Price
   state.shippingPrice = addDecimals(state.itemsPrice > 100 ? 0 : 10);
 
-  // Calculate Tax Price
-  state.taxPrice = addDecimals(Number(0.15 * state.itemsPrice).toFixed(2));
+  state.taxPrice = addDecimals(Number((0.15 * state.itemsPrice).toFixed(2)));
 
-  // Calculate Total Price
   state.totalPrice = (
     Number(state.itemsPrice) +
     Number(state.shippingPrice) +
     Number(state.taxPrice)
   ).toFixed(2);
 
-  localStorage.setItem("cart", JSON.stringify(state));
+  localStorage.setItem('cart', JSON.stringify(state));
 
   return state;
 };
