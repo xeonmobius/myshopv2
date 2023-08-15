@@ -34,7 +34,7 @@ const Loginscreen = () => {
     e.preventDefault();
 
     try {
-      const res = await login({email, password}).unwrap;
+      const res = await login({email, password}).unwrap();
         dispatch(setCredentials({...res, }));
         navigate(redirect);
     } catch (error) {
