@@ -16,6 +16,7 @@ const Loginscreen = () => {
   const navigate = useNavigate();
 
   const [login, { isLoading }] = useLoginMutation();
+
   const { userInfo } = useSelector((state) => state.auth);
 
   const { search } = useLocation();
@@ -27,7 +28,7 @@ const Loginscreen = () => {
       if (userInfo) {
         navigate(redirect);
       }
-  }, [userInfo, redirect, navigate]);
+  }, [navigate, redirect, userInfo]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
