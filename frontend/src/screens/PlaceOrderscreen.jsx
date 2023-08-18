@@ -11,7 +11,9 @@ import { clearCartItems } from "../slices/cartSlice";
 
 const PlaceOrderscreen = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
+  const [createOrder, { isLoading, error }] = useCreateOrderMutation();
 
   useEffect(() => {
     if (!cart.shippingAddress.address) {
@@ -20,6 +22,25 @@ const PlaceOrderscreen = () => {
       navigate("/payment");
     }
   }, [cart.paymentMethod, cart.shippingAddress.address, navigate]);
+
+  const placeOrderHandler = async () => {
+    try {
+      const res = await createOrder({
+        orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod,
+        itemsPrice: cart.itemsPrice,
+        shippingPrice: cart.shippingPrice,
+        taxPrice: cart.taxPrice,
+        totalPrice: cart.totalPrice,
+      }).unwrap();
+
+      dispatch(clearCartItems());
+      navigate(`/order/${res._id}`);
+    } catch (error) {
+      toast.error(error?.data?.message || error.error);
+    }
+  };
 
   return (
     <>
@@ -74,12 +95,47 @@ const PlaceOrderscreen = () => {
           </ListGroup>
         </Col>
         <Col md={4}>
-            <Card>
-                <ListGroup variant="flush">
-                    <ListGroup.Item><h2>Order Summary</h2></ListGroup.Item>
-                    <ListGroup.Item><h2>Order Summary</h2></ListGroup.Item>
-                    </ListGroup>
-            </Card>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h2>Order Summary</h2>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Col>Items:</Col>
+                <Col>$ {cart.itemsPrice}</Col>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Col>Shipping:</Col>
+                <Col>$ {cart.shippingPrice}</Col>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Col>Tax:</Col>
+                <Col>$ {cart.taxPrice}</Col>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Col>Total:</Col>
+                <Col>$ {cart.totalPrice}</Col>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                {error && (
+                  <Message variant="danger">
+                    {error?.data?.message || error.error}
+                  </Message>
+                )}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Button
+                  type="button"
+                  className="btn-block"
+                  disabled={cart.cartItems.length === 0}
+                  onClick={placeOrderHandler}
+                >
+                  Place Order
+                </Button>
+                {isLoading && <Loader />}
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
         </Col>
       </Row>
     </>
