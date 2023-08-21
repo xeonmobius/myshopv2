@@ -3,13 +3,30 @@ import { Table, Button, Row, Col } from "react-bootstrap";
 import { FaTimes, FaEdit, FaTrash } from "react-icons/fa";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
-import { useGetProductsQuery } from "../../slices/productsApiSlice";
+import {
+  useGetProductsQuery,
+  useCreateProductMutation,
+} from "../../slices/productsApiSlice";
+import { toast } from "react-toastify";
 
-function ProductListscreen() {
+const ProductListscreen = () => {
   const { data: products, isLoading, error } = useGetProductsQuery();
-    const deleteHandler = (id) => {
-    
+
+  const [createProduct, { isLoading: loadingCreate }, refetch] =
+    useCreateProductMutation();
+
+  const createProductHandler = async () => {
+    if (window.confirm("Are you sure want to create a new product?")) {
+      try {
+        await createProduct();
+        refetch();
+      } catch (error) {
+        toast.error(error?.data?.message || error.message);
+      }
     }
+  };
+
+  const deleteHandler = (id) => {};
 
   return (
     <>
@@ -18,11 +35,12 @@ function ProductListscreen() {
           <h1>Products</h1>
         </Col>
         <Col className="text-end">
-          <Button className="my-3 btn-sm">
+          <Button className="my-3 btn-sm" onClick={createProductHandler}>
             <FaEdit /> Create Product
           </Button>
         </Col>
       </Row>
+      {loadingCreate && <Loader />}
       {isLoading ? (
         <Loader />
       ) : error ? (
@@ -54,7 +72,11 @@ function ProductListscreen() {
                         <FaEdit />
                       </Button>
                     </LinkContainer>
-                    <Button variant="danger" className="btn-sm" onClick={() => deleteHandler(product._id)}>
+                    <Button
+                      variant="danger"
+                      className="btn-sm"
+                      onClick={() => deleteHandler(product._id)}
+                    >
                       <FaTrash style={{ color: "white" }} />
                     </Button>
                   </td>
@@ -66,6 +88,6 @@ function ProductListscreen() {
       )}
     </>
   );
-}
+};
 
 export default ProductListscreen;
