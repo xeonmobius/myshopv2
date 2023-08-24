@@ -26,7 +26,6 @@ const ProductEditscreen = () => {
     data: product,
     isLoading,
     error,
-    refetch,
   } = useGetProductDetailsQuery(productId);
 
   const [updateProduct, { isLoading: loadingUpdateProduct }] =
@@ -131,6 +130,7 @@ const ProductEditscreen = () => {
                 onChange={uploadFileHandler}
               />
             </Form.Group>
+            {loadingUploadImage && <Loader />}
 
             <Form.Group controlId="brand" className="my-2">
               <Form.Label>Brand</Form.Label>

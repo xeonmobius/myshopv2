@@ -30,11 +30,18 @@ import ProductListscreen from "./screens/admin/ProductListscreen";
 import ProductEditscreen from "./screens/admin/ProductEditscreen";
 import UserListscreen from "./screens/admin/UserListscreen";
 import UserEditscreen from "./screens/admin/UserEditscreen";
+import { HelmetProvider } from "react-helmet-async";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route index={true} path="/" element={<Homescreen />} />
+      <Route path="/page/:pageNumber" element={<Homescreen />} />
+      <Route path="/search/:keyword" element={<Homescreen />} />
+      <Route
+        path="/search/:keyword/page/:pageNumber"
+        element={<Homescreen />}
+      />
       <Route path="product/:id" element={<Productscreen />} />
       <Route path="cart" element={<CartScreen />} />
       <Route path="login" element={<Loginscreen />} />
@@ -49,6 +56,10 @@ const router = createBrowserRouter(
       <Route path="" element={<AdminRoute />}>
         <Route path="/admin/orderlist" element={<OrderListscreen />} />
         <Route path="/admin/productlist" element={<ProductListscreen />} />
+        <Route
+          path="/admin/productlist/:pageNumber"
+          element={<ProductListscreen />}
+        />
         <Route path="/admin/product/:id/edit" element={<ProductEditscreen />} />
         <Route path="/admin/userlist" element={<UserListscreen />} />
         <Route path="/admin/user/:id/edit" element={<UserEditscreen />} />
@@ -60,11 +71,13 @@ const router = createBrowserRouter(
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <PayPalScriptProvider deferLoading={true}>
-        <RouterProvider router={router} />
-      </PayPalScriptProvider>
-    </Provider>
+    <HelmetProvider>
+      <Provider store={store}>
+        <PayPalScriptProvider deferLoading={true}>
+          <RouterProvider router={router} />
+        </PayPalScriptProvider>
+      </Provider>
+    </HelmetProvider>
   </React.StrictMode>
 );
 
